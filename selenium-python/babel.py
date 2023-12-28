@@ -5,13 +5,17 @@ import time
 import pandas as pd
 headers = {
     "Name":[],
+    "bookId":[],
+    "alternateTitle":[],
     "Views":[],
     "URL":[],
     "Rating":[],
     "No. of Ratings":[],
     "Genre":[],
     "Total Chapters":[],
-    "Status":[],
+    "createTime":[],
+    "lastUpdateTime":[],
+    "Status":[],    
     "Tags":[]
 }
 ans = pd.DataFrame(headers)
@@ -41,8 +45,8 @@ for gender in ['male', 'female']:
                 # no_of_ratings = soup1.select_one('.book-info_edit-wrapper__2xE4R').text
                 genre = entry["genres"][0]["name"]
                 #     No meaningful data came, all dates same (2018 - 2021)
-                #     first_chapter_publish_time = entry["genres"][0]["createTime"].split('T')[0]
-                #     latest_chapter_publish_time = entry["genres"][0]["updateTime"].split('T')[0]
+                first_chapter_publish_time = entry["genres"][0]["createTime"].split('T')[0]
+                latest_chapter_publish_time = entry["genres"][0]["updateTime"].split('T')[0]
                 total_chapters = entry["releasedChapterCount"]
                 # total_chapter = soup1.select_one('.latest-chapter_title__1Bg53').text
                 if entry["enSerial"] == "completed":
@@ -67,7 +71,8 @@ for gender in ['male', 'female']:
                     tags = '-'.join(tags_list)
                 except:
                     tags = ''
-                ans.loc[len(ans.index)] = [name,views,url,rating,rating_count,genre,total_chapters,status,tags]
+                book_id=f'babel-{canonicalName}'
+                ans.loc[len(ans.index)] = [name,book_id,canonicalName,views,url,rating,rating_count,genre,total_chapters,first_chapter_publish_time,latest_chapter_publish_time,status,tags]
             except Exception as e:
                 pass
             cu += 1
