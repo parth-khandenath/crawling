@@ -15,16 +15,16 @@ options.add_argument(f"--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap
 
 driver = uc.Chrome(options=options)
 
-channel_name="Netflix"  #change here
+channel_name="TecentVideo"  #change here
 
 site=f'https://www.youtube.com/@{channel_name}/videos'
 
 ans=pd.DataFrame(df_header)
 driver.get(site)
-
+time.sleep(3)
 video_no=1
 
-while video_no<193: #change this number as per total videos of channel
+while video_no<7000: #change this number as per total videos of channel
     row_no=video_no//4 +1
     try:
         print("trying row no.",row_no)
@@ -45,7 +45,7 @@ while video_no<193: #change this number as per total videos of channel
                     views=views[:-1]+'000'
                 else:
                     views= float(views[:-1])*1000
-            if int(views)>=500000: #threshold for views
+            if int(views)>=100000: #threshold for views
                 ans.loc[len(ans.index)]=[title,views,date]
                 ans.to_csv(f'youtube-{channel_name}.csv',index=False) 
         if len(row_titles)<4 and len(row_titles)>0: #this was the last row
