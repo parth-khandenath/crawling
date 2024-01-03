@@ -10,22 +10,28 @@ df_header = {
 }
 
 options = uc.ChromeOptions() 
+options.page_load_strategy = 'eager'
 options.add_argument('--disable-blink-features=AutomationControlled')
 options.add_argument(f"--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36")
 
 driver = uc.Chrome(options=options)
 
-channel_name="TecentVideo"  #change here
+channel_name="TencentVideo"  #change here
 
 site=f'https://www.youtube.com/@{channel_name}/videos'
-
-ans=pd.DataFrame(df_header)
+try:
+    ans=pd.read_csv(f'youtube-{channel_name}.csv')
+except:
+    ans=pd.DataFrame(df_header)
 driver.get(site)
 time.sleep(3)
-video_no=1
+# video_no=1
+video_no=8625  #have to resume from here
 
-while video_no<7000: #change this number as per total videos of channel
+
+while video_no<46000: #change this number as per total videos of channel
     row_no=video_no//4 +1
+    print("video no:",video_no)
     try:
         print("trying row no.",row_no)
         row_titles=driver.find_elements(By.CSS_SELECTOR,f'#contents .ytd-rich-grid-renderer:nth-child({row_no}) #video-title')
@@ -56,6 +62,9 @@ while video_no<7000: #change this number as per total videos of channel
             driver.execute_script("window.scrollTo(0, window.scrollY+200)")
             continue
         video_no+=4
+    except (ConnectionAbortedError, ConnectionError, ConnectionRefusedError, ConnectionResetError):
+        time.sleep(20)
+        print('connection error...retrying in 20 secs..')
     except Exception as e:
         print(e)
         print('scrolling down')
