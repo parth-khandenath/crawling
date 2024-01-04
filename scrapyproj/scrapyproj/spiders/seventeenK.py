@@ -39,22 +39,25 @@ class SeventeenKSpider(scrapy.Spider):
         #     page_text = page_info.strip()
         #     if '共' in page_text and '页' in page_text:
         #         last_pg = int(page_text.split("共")[1].split("页")[0].strip())
-        last_pg=334
+        last_pg=5
                 
         for i in range(1, last_pg+1):
             url = self.start_urls + \
                 f"_{i}.html"
-            yield scrapy.Request(url=url, callback=self.parse, priority=i, dont_filter=True)
+            # yield scrapy.Request(url=url, callback=self.parse, priority=i, dont_filter=True)
             yield scrapy.Request(url=url, callback=self.parse, priority=-i, dont_filter=True)
 
     def parse(self, response):
         soup = BeautifulSoup(response.text, 'lxml')
-        trs = soup.select("tr")[2:]
+        # trs = soup.select("tr")[2:]
+        trs = soup.select("tbody tr")[1:]
+        print("###################")
+        print(len(trs))
 
         for tr in trs:
             title = tr.select_one("a.jt").get_text(strip=True)
             book_url = tr.select_one("a.jt")["href"]
-            book_url = f"http:{book_url}"
+            book_url = f"https:{book_url}"
             category = tr.select_one("td.td2").get_text(strip=True)
             category = tr.select_one("td.td2 a").get_text(strip=True)
             latest_chapter = tr.select_one("td.td4").get_text(strip=True)
@@ -80,8 +83,9 @@ class SeventeenKSpider(scrapy.Spider):
         # readers = soup1.find('em', {'id': 'howmuchreadBook'}).text.strip()
         readers = response.css('em#howmuchreadBook::text').get()
         words = response.css('em.red::text').get()
-        book_details_url = response.css('dt.read a::attr(href)').get()
-        book_details_url = f"https://www.17k.com{book_details_url}"
+        # book_details_url = response.css('dt.read a::attr(href)').get()
+        book_id=response.meta["book_url"].split('/')[-1][:-5]
+        book_details_url = f"https://www.17k.com/list/{book_id}.html"
 
         monthly_recomendations = response.css('td#flower_month::text').get()
 
@@ -135,7 +139,7 @@ class SeventeenKSpider(scrapy.Spider):
     def closed(self, reason):
         self.output_dict[self.name] = self.output
         df = pd.DataFrame(self.output)
-        df.to_csv(f"17k-out/{self.book_name}.csv", index=False)
+        df.to_csv(f"17k-out/{self.book_name}2.csv", index=False)
 
 
 def main():
