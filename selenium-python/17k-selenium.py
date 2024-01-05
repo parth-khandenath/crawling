@@ -20,7 +20,6 @@ headers = {
         }
 
 # ans = pd.DataFrame(headers)
-ans=pd.read_csv('17k-female.csv')
 
 options = uc.ChromeOptions() 
 options.page_load_strategy = 'eager'
@@ -32,10 +31,14 @@ last_page=334 #change here
 genders=['male', 'female']
 gender_links=[ "https://www.17k.com/all/book/2_0_0_0_0_4_0_0", "https://www.17k.com/all/book/3_0_0_0_0_4_0_0",]
 for ind in range(len(genders)):
-    # if gender == 'male':
-    #     continue
+    if genders[ind] == 'male':
+        continue
     page_number = 1 
-    # page_number = 1 
+    page_number = 109  #resume here 
+    try:
+        ans=pd.read_csv(f'17k-{genders[ind]}.csv')
+    except:
+        ans=pd.DataFrame(headers)
     while True:
         try:
             print("trying page:",page_number)
