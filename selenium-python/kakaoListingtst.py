@@ -34,7 +34,7 @@ def fill_data(book_data, tag, info):
     return book_data
 
 subcat_uid='89' #change here
-total_pages=12 #change here
+
 data_file_name = f"kakao-subcategory-{subcat_uid}.csv"
 main_url = "https://page.kakao.com/graphql"
 def get_payload(page):
@@ -60,7 +60,8 @@ headers = {
 }
 
 driver=uc.Chrome()
-page_no=0
+page_no=0    
+# page_no=192
 while True:
     try:
         payload=get_payload(page_no)
@@ -175,3 +176,4 @@ while True:
         page_no+=1
     except TimeoutError:
         print("timeout,retrying...")
+        time.sleep(20)
