@@ -29,12 +29,12 @@ driver = uc.Chrome(options=options)
 
 last_page=334 #change here
 genders=['male', 'female']
-gender_links=[ "https://www.17k.com/all/book/2_0_0_0_0_4_0_0", "https://www.17k.com/all/book/3_0_0_0_0_4_0_0",]
+gender_links=[ "https://www.17k.com/all/book/2_0_0_0_0_4_0_0", "https://www.17k.com/all/book/3_0_0_0_0_4_0_0"]
 for ind in range(len(genders)):
     if genders[ind] == 'male':
         continue
     page_number = 1 
-    page_number = 109  #resume here 
+    # page_number = 109  #resume here 
     try:
         ans=pd.read_csv(f'17k-{genders[ind]}.csv')
     except:
