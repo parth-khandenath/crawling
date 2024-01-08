@@ -19,14 +19,27 @@ headers = {
     "Tags":[]
 }
 ans = pd.DataFrame(headers)
-page_number = 0
+
 cu = 0
 driver = uc.Chrome()
 for gender in ['male', 'female']:
-    if gender == 'male':
-        continue
+    # if gender == 'male':
+    #     continue
+    try:
+        ans=pd.read_csv(f"babel-{gender}-lead.csv")
+    except:
+        ans=pd.DataFrame(headers)
+    page_number = 0
     while True:
         # female-lead
+        if gender=='male':
+            if page_number==123:
+                print("male done...")
+                break
+        else:
+            if page_number==157:
+                print("female done...")
+                break
         link = f"https://api.babelnovel.com/v1/books?orderBy=week&languageCode=en&topClass=webnovel&targetAudience={gender}-lead&page={page_number}&pageSize=20&fields=id,name,canonicalName,genres,cover,subTitle,synopsis,translatorId,ratingNum,markedUp,releasedChapterCount,enSerial,readingTrend"
         driver.get(link)
         soup = bs(driver.page_source,"lxml")

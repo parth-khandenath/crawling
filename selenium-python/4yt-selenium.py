@@ -69,7 +69,7 @@ options.add_argument('--disable-blink-features=AutomationControlled')
 options.add_argument(f"--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36")
 driver = uc.Chrome(options=options)
 
-last_page=621 #change here
+last_page=622 #change here
 # page_no=248
 page_no=1
 request_no=0
@@ -98,8 +98,11 @@ while True:
             driver.get(book_link) #book  opened
             soup2=BeautifulSoup(driver.page_source,'lxml')
             # title = soup2.select_one('div.book-head div.cont span.h1').text
-            title = soup2.find('span',class_='h1').text
-            print("a")
+            try:
+                title = soup2.find('span',class_='h1').text
+                print("a")
+            except: #403 for this book
+                continue
             # author = soup2.select_one('div.book-head div.cont span.h2').text
             author = soup2.find('span',class_='h2').text
             print("b")
