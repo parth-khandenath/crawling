@@ -23,13 +23,15 @@ ans = pd.DataFrame(headers)
 cu = 0
 driver = uc.Chrome()
 for gender in ['male', 'female']:
-    # if gender == 'male':
-    #     continue
+    if gender == 'male':
+        continue
     try:
         ans=pd.read_csv(f"babel-{gender}-lead.csv")
     except:
         ans=pd.DataFrame(headers)
     page_number = 0
+    if gender=='female':
+        page_number=66
     while True:
         # female-lead
         if gender=='male':
@@ -91,6 +93,7 @@ for gender in ['male', 'female']:
             cu += 1
             print(f"Done {cu}")
         ans.to_csv(f"babel-{gender}-lead.csv",index=False)
+        print(f"gender:{gender} , page no done:{page_number}")
         page_number += 1
     ans = pd.DataFrame(headers) 
     time.sleep(15)
