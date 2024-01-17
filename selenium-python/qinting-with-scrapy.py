@@ -91,7 +91,7 @@ class QingTingSpider(scrapy.Spider):
         id=(response.meta['url1']).split('/')[-1]
         data= {
             'title': response.meta['title'],
-            'id': id,
+            'id': 'qinting'+id,
             'url': response.meta['url1'],
             'anchors': response.meta['anchors'],
             'description': response.meta['descr'],

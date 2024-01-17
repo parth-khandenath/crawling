@@ -4,22 +4,34 @@ import time
 from selenium.webdriver.common.by import By
 import undetected_chromedriver as uc
 
-album_ids=['68724415','18420226','29316562','3888524','76612906','18445821','4756811','4756811'] #change here         
+# album_ids=['47517749','18420226','29316562','3888524','76612906','18445821','4756811','4756811'] #change here       
+album_ids=[]
+id_df=pd.read_csv('xim-15jan/links-to-crawl.csv')
+for idx,row in id_df.iterrows():
+    alb_id=row['URL'].split('/')[-1]
+    album_ids.append(alb_id)
+print(len(album_ids))
+print(album_ids)
+
 df_header={
     'episode_title':[],
     'date':[],
     'duration':[],
     'playCount':[]
 }
-options = uc.ChromeOptions() 
-options.page_load_strategy = 'eager'
-options.add_argument('--disable-blink-features=AutomationControlled')
-options.add_argument(f"--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36")
+# options = uc.ChromeOptions() 
+# options.page_load_strategy = 'eager'
+# options.add_argument('--disable-blink-features=AutomationControlled')
+# options.add_argument(f"--user-agent=Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36")
 
-driver = uc.Chrome(options=options)
+# driver = uc.Chrome(options=options)
+c=0
 for album_id in album_ids:
+    c+=1
+    if c<=34:
+        continue
     try:
-        df=pd.read_csv(f'ximalya1-{album_id}.csv')
+        df=pd.read_csv(f'xim-15jan/ximalya-{album_id}.csv')
     except:
         df=pd.DataFrame(df_header)
     headers = {
@@ -46,9 +58,10 @@ for album_id in album_ids:
         res_json=response.json()
         tracks=res_json['data']['tracks']
         for track in tracks:
-            driver.get('https://www.ximalaya.com'+track['url'])
-            time.sleep(2)
-            date=driver.find_elements(By.CSS_SELECTOR,'.time')[0].text
+            # driver.get('https://www.ximalaya.com'+track['url'])
+            # time.sleep(2)
+            # date=driver.find_elements(By.CSS_SELECTOR,'.time')[0].text
+            date=track['createDateFormat']
             df.loc[len(df.index)]=[track['title'],date,track['duration'],track['playCount']]
-            df.to_csv(f'ximalya1-{album_id}.csv',index=False)
+            df.to_csv(f'xim-15jan/ximalya-{album_id}.csv',index=False)
 
