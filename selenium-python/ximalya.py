@@ -26,14 +26,20 @@ df_header={
 
 # driver = uc.Chrome(options=options)
 c=0
+skip=True
 for album_id in album_ids:
     c+=1
-    if c<=34:
+    # if c<=34:
+    #     continue
+    if album_id=='19735527':
+        skip=False
+    if skip:
         continue
     try:
         df=pd.read_csv(f'xim-15jan/ximalya-{album_id}.csv')
     except:
         df=pd.DataFrame(df_header)
+    print('album id:',album_id)
     headers = {
             "authority": "www.ximalaya.com",
             "accept": "*/*",
@@ -64,4 +70,6 @@ for album_id in album_ids:
             date=track['createDateFormat']
             df.loc[len(df.index)]=[track['title'],date,track['duration'],track['playCount']]
             df.to_csv(f'xim-15jan/ximalya-{album_id}.csv',index=False)
+
+    print('albums done:',c)
 

@@ -59,7 +59,7 @@ headers = {
 }
 
 try:
-    ans=pd.read_csv('4yt-new.csv')
+    ans=pd.read_csv('4yt.csv')
 except:
     ans=pd.DataFrame(df_header)
 
@@ -217,7 +217,7 @@ while True:
             if weekly_recomendations=="" or weekly_recomendations=="-":
                 weekly_recomendations="N/A"
             ans.loc[len(ans.index)]=[title,book_id,author,tags,approx_num_chapts,status,approx_novel_start,last_chapter_time,words,book_link,reads,total_recomendations,weekly_recomendations]
-            ans.to_csv('4yt-new.csv',index=False)
+            ans.to_csv('4yt.csv',index=False)
 
         print("page done:",page_no)
         page_no+=1

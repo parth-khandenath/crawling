@@ -6,9 +6,11 @@ from csv import DictWriter
 
 class QingTingSpider(scrapy.Spider):
     name = 'qinting_spider'
-    file_name='qinting-sci-fi'  #change
-    genre_code='3850'   #change
-    last_page=8   #change
+    # map = { genrename: [genrecode,lastpage] } 
+    map={'sci-fi':['3850',8],'fantasy-romance':['3843',17],'feOriented-mystery':['3844',7],'modern-romance':['3842',155],'ancient-romance':['3841',122],'historical-legends':['3840',38],'fantasy-superPower':['3839',82],'suspense-supernatural':['3838',122],'urban':['3837',160]}
+    file_name=''  #change
+    genre_code=''   #change
+    last_page=0   #change
     start_urls =[] 
     df_header = {
         "title": [],"id":[], "url": [], "anchors": [], "description": [], "total plays": [],
@@ -35,9 +37,11 @@ class QingTingSpider(scrapy.Spider):
         }
     }
     def __init__(self):
-        # self.file_name=filename
-        for i in range(1,self.last_page+1):
-            self.start_urls.append(f'https://webapi.qingting.fm/api/mobile/categories/521/attr/3289-{self.genre_code}/?page={i}')
+        genrename='urban'  #change here
+        self.file_name=f'qinting-{genrename}'
+        for i in range(1,self.map[genrename][1]+1):
+            print('page:',i)
+            self.start_urls.append(f'https://webapi.qingting.fm/api/mobile/categories/521/attr/3289-{self.map[genrename][0]}/?page={i}')
     
     def append_list_as_row(self,file_name, list_of_elem):
         file_exists = os.path.isfile(file_name)
@@ -59,9 +63,7 @@ class QingTingSpider(scrapy.Spider):
             url2 = f'https://webapi.qingting.fm/api/mobile/channels/{entry["id"]}'
             url3 = f'{url2}/programs?version='
 
-            yield scrapy.Request(url2, callback=self.parse_channel, meta={'url1': url1, 'title': title,
-                                                                           'episodes': episodes, 'descr': descr,
-                                                                           'plays': plays, 'url3': url3})
+            yield scrapy.Request(url2, callback=self.parse_channel, meta={'url1': url1, 'title': title,'episodes': episodes, 'descr': descr,'plays': plays, 'url3': url3})
     
     def parse_channel(self, response):
         data = json.loads(response.text)
@@ -91,7 +93,7 @@ class QingTingSpider(scrapy.Spider):
         id=(response.meta['url1']).split('/')[-1]
         data= {
             'title': response.meta['title'],
-            'id': 'qinting'+id,
+            'id': 'qinting-'+id,
             'url': response.meta['url1'],
             'anchors': response.meta['anchors'],
             'description': response.meta['descr'],
@@ -103,15 +105,15 @@ class QingTingSpider(scrapy.Spider):
         self.append_list_as_row(self.file_name+'.csv',data)
 
 if __name__ == "__main__":
-    df_header = {
-        "title": [],"id":[], "url": [], "anchors": [], "description": [], "total plays": [],
-        "episode count": [], "episode 1 plays": [], "episode 1 date": []
-    }
-    file_name='qinting-sci-fi' #change
-    try:
-        ans = pd.read_csv(f'{file_name}.csv')
-    except:
-        ans = pd.DataFrame(df_header)
+    # df_header = {
+    #     "title": [],"id":[], "url": [], "anchors": [], "description": [], "total plays": [],
+    #     "episode count": [], "episode 1 plays": [], "episode 1 date": []
+    # }
+    # file_name='qinting-sci-fi' #change
+    # try:
+    #     ans = pd.read_csv(f'{file_name}.csv')
+    # except:
+    #     ans = pd.DataFrame(df_header)
     from scrapy.crawler import CrawlerProcess
     process = CrawlerProcess()
     process.crawl(QingTingSpider)

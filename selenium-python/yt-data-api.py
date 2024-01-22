@@ -9,7 +9,6 @@ load_dotenv()
 
 channel_id='UCQatgKoA7lylp_UzvsLCgcw'   #change here
 file_name='yt-trial.csv'    #change here
-# apikey_lsts=['AIzaSyAN6JpbgUwqCl1iScIkZxkRrQBYB6zvpd0','AIzaSyDeo9BDSmJcvMLD2oVDlIvF7ONYTbu84nY','AIzaSyD3dhOZFfNt8yXqbUfsINaQ0QrSMlC4-g0','AIzaSyCTYE4tkcLMU1nih0vxvr8uXz_WBJFLfHg','AIzaSyCoRImQPn5kEX1rynV6HUawv5Lropgv1zc','AIzaSyCqqo5Rtfj9_UxJE6uunFCA1bx6DJWIacw','AIzaSyCNgIwxiAh_XF7tmzXx5h9jYD9Ywd-dBDE','AIzaSyAFloRMgEuSodkaIjOwz5u0CmWPAmSbaTU','AIzaSyCGQydk53JSglFM4QmwmhWY4d5faZ0ni2s','AIzaSyB6GEfL2pGdhA1D_1j2yAs77pmRj0iq2eA']
 total_api_keys=int(os.getenv('total_api_keys'))
 ptr=1
 api_key= os.getenv(f'youtube_data_apikey{ptr}') #apikey_lsts[ptr]
@@ -59,7 +58,11 @@ next_page_token=None
 video_count=0
 for pl_id in playlist_ids:
     while True:
-        my_file=open("C:\\Users\\Admin\\Desktop\\pfm\\crawling\\pagefile.txt",'r')
+        try:
+            my_file=open(os.getenv('pagefile_path'),'r')
+        except FileNotFoundError:
+            my_file=open(os.getenv('pagefile_path'),'w+')
+            my_file.write("None")
         next_page_token=my_file.read().strip()
         my_file.close()
         if next_page_token=="None":
@@ -118,7 +121,7 @@ for pl_id in playlist_ids:
             print("BREAKING......1")
             break
         print("videos done:",video_count)
-        my_file=open("C:\\Users\\Admin\\Desktop\\pfm\\crawling\\pagefile.txt",'w')
+        my_file=open(os.getenv('pagefile_path'),'w')
         my_file.write(str(next_page_token))
         my_file.close()
         if next_page_token==None or len(next_page_token)==0:
