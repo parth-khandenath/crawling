@@ -1,4 +1,6 @@
 import undetected_chromedriver as uc
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
 from bs4 import BeautifulSoup 
 import re
 import time
@@ -31,8 +33,8 @@ last_page=334 #change here
 genders=['male', 'female']
 gender_links=[ "https://www.17k.com/all/book/2_0_0_0_0_4_0_0", "https://www.17k.com/all/book/3_0_0_0_0_4_0_0"]
 for ind in range(len(genders)):
-    if genders[ind] == 'male':
-        continue
+    # if genders[ind] == 'male':  #for skipping
+    #     continue
     page_number = 1 
     # page_number = 109  #resume here 
     try:
@@ -63,6 +65,7 @@ for ind in range(len(genders)):
                     state = tr.select_one("td.td8").get_text(strip=True)
 
                     driver.get(book_url2) #open book
+                    WebDriverWait(driver,6).until(lambda x: x.find_element(By.CSS_SELECTOR,'.amoutItem___1_NQS').is_displayed())
                     soup2 = BeautifulSoup(driver.page_source,'lxml')
                     readers = soup2.select_one('em#howmuchreadBook').text
                     words = soup2.select_one('em.red').text

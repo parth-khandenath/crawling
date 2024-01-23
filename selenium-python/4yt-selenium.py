@@ -70,8 +70,8 @@ options.add_argument(f"--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) Ap
 driver = uc.Chrome(options=options)
 
 last_page=622 #change here
-# page_no=248
 page_no=1
+# page_no=360
 request_no=0
 while True:
     try:
@@ -96,12 +96,14 @@ while True:
                 book_link=base_url+book_link
 
             driver.get(book_link) #book  opened
+            # time.sleep(2)
             soup2=BeautifulSoup(driver.page_source,'lxml')
             # title = soup2.select_one('div.book-head div.cont span.h1').text
             try:
                 title = soup2.find('span',class_='h1').text
                 print("a")
-            except: #403 for this book
+            except Exception as e: #403 for this book
+                print('errorrrr:',e)
                 continue
             # author = soup2.select_one('div.book-head div.cont span.h2').text
             author = soup2.find('span',class_='h2').text
