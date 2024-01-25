@@ -2,5 +2,6 @@ scapy-steps.txt
 *.csv
 *.env
 *.xlsx
+*.docx
 __pycache__/
 __pycache__/*
