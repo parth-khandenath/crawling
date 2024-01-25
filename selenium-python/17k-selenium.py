@@ -33,10 +33,11 @@ last_page=334 #change here
 genders=['male', 'female']
 gender_links=[ "https://www.17k.com/all/book/2_0_0_0_0_4_0_0", "https://www.17k.com/all/book/3_0_0_0_0_4_0_0"]
 for ind in range(len(genders)):
-    # if genders[ind] == 'male':  #for skipping
-    #     continue
-    page_number = 1 
-    # page_number = 109  #resume here 
+    if genders[ind] == 'male':  #for skipping
+        continue
+        page_number = 247
+    else:
+        page_number=50
     try:
         ans=pd.read_csv(f'17k-{genders[ind]}.csv')
     except:
@@ -65,8 +66,15 @@ for ind in range(len(genders)):
                     state = tr.select_one("td.td8").get_text(strip=True)
 
                     driver.get(book_url2) #open book
-                    WebDriverWait(driver,6).until(lambda x: x.find_element(By.CSS_SELECTOR,'.amoutItem___1_NQS').is_displayed())
+                    # WebDriverWait(driver,6).until(lambda x: x.find_element(By.CSS_SELECTOR,'.amoutItem___1_NQS').is_displayed())
                     soup2 = BeautifulSoup(driver.page_source,'lxml')
+                    try:
+                        readers = soup2.select_one('em#howmuchreadBook').text
+                    except:
+                        print('reloading book')
+                        driver.get(book_url2)
+                        time.sleep(3)
+                        soup2 = BeautifulSoup(driver.page_source,'lxml')
                     readers = soup2.select_one('em#howmuchreadBook').text
                     words = soup2.select_one('em.red').text
                     monthly_recomendations = soup2.select_one('td#flower_month').text

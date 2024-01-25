@@ -149,7 +149,7 @@ class SeventeenKSpider(scrapy.Spider):
     def closed(self, reason):
         self.output_dict[self.name] = self.output
         df = pd.DataFrame(self.output)
-        df.to_csv(f"17k-out/{self.book_name}2.csv", index=False)
+        df.to_csv(f"17k-out/{self.book_name}.csv", index=False)
 
 
 def main():
