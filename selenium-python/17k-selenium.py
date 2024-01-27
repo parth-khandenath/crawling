@@ -37,7 +37,7 @@ for ind in range(len(genders)):
         continue
         page_number = 247
     else:
-        page_number=50
+        page_number=137 
     try:
         ans=pd.read_csv(f'17k-{genders[ind]}.csv')
     except:

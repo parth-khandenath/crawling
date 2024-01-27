@@ -40,7 +40,9 @@ for gender in ['male-lead', 'female-lead','original']:
     if gender=='male-lead':
         continue
     if gender=='female-lead':
-        page_number=105
+        continue
+    if gender=='original':
+        page_number=83
     while True:
         if gender=='male-lead':
             if page_number==123: #change here
@@ -60,8 +62,8 @@ for gender in ['male-lead', 'female-lead','original']:
             link=f"https://api.babelnovel.com/v1/books?orderBy=week&languageCode=en&topClass={gender}&targetAudience=&page={page_number}&pageSize=20&fields=id,name,canonicalName,genres,cover,subTitle,synopsis,translatorId,ratingNum,markedUp,releasedChapterCount,enSerial,readingTrend"
         driver.get(link)
         requests+=1
-        if requests%150==0:
-            time.sleep(20)
+        # if requests%150==0:
+        #     time.sleep(20)
         soup = bs(driver.page_source,"lxml")
         data = json.loads(soup.text)
         page_data = data["data"]
@@ -99,14 +101,15 @@ for gender in ['male-lead', 'female-lead','original']:
                 try:
                     driver.get(book_api)
                     requests+=1
-                    if requests%150==0:
-                        time.sleep(20)
+                    # if requests%150==0:
+                    #     time.sleep(20)
                     soup = bs(driver.page_source,"lxml")
                     book_data = json.loads(soup.text)
                     tags_list = book_data['data']['tags']
                     rating_count = book_data['data']['ratingCount']
                     tags = '-'.join(tags_list)
-                except:
+                except Exception as e:
+                    print('err aya:',e)
                     tags = ''
                 book_id=f'babel-{canonicalName}'
                 ans.loc[len(ans.index)] = [name,book_id,canonicalName,views,url,rating,rating_count,genre,total_chapters,first_chapter_publish_time,latest_chapter_publish_time,status,tags]
