@@ -34,10 +34,10 @@ genders=['male', 'female']
 gender_links=[ "https://www.17k.com/all/book/2_0_0_0_0_4_0_0", "https://www.17k.com/all/book/3_0_0_0_0_4_0_0"]
 for ind in range(len(genders)):
     if genders[ind] == 'male':  #for skipping
-        continue
-        page_number = 247
+        page_number = 293
     else:
-        page_number=137 
+        continue
+        page_number=274 #updted 8:56 am 
     try:
         ans=pd.read_csv(f'17k-{genders[ind]}.csv')
     except:
