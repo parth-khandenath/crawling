@@ -49,6 +49,7 @@ for ind in range(len(genders)):
                 break
             catalog_link = f"{gender_links[ind]}_{page_number}.html"
             driver.get(catalog_link) #open a page of catalog
+            time.sleep(3)
             soup = BeautifulSoup(driver.page_source,'lxml')
             trs = soup.select("tbody tr")[1:]
             # print("###################")
@@ -105,6 +106,7 @@ for ind in range(len(genders)):
                 except Exception as er:
                     print("errrrr:",er)
             page_number+=1
+            break
         except Exception as e:
             print("err:",e)
             time.sleep(2)

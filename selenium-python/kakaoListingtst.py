@@ -11,6 +11,8 @@ from csv import DictWriter
 # COLUMNS = ["ISBN", "Title", "Ratings", "No. of Ratings", "URL","No"]
 COLUMNS = ["book_id","title","ageGrade","total_chaps","rating","views","tags","genre","description","url","publisher","chapter1_date"]
 def append_list_as_row(file_name, list_of_elem):
+    if (len(list_of_elem)<12):
+        print(list_of_elem)
     file_exists = os.path.isfile(file_name)
     with open(file_name, mode="a+", encoding="utf-8-sig", newline="") as csvfile:
         writer = DictWriter(csvfile, fieldnames=COLUMNS)
@@ -21,7 +23,7 @@ def filter_data(book_data):
     for key in book_data.keys():
         if not book_data[key]:
             book_data[key] = "NA"
-    return book_data
+    return book_data     #https://page.kakao.com/content/63143588
 def fill_data(book_data, tag, info):
     if book_data[tag]:
         book_data[tag] +=info 
@@ -34,10 +36,9 @@ def get_payload(page):
     payload = json.dumps(json_data)
     return payload
 
-genre_map={'89':'romance','86':'fantasy','117':'ropan','125':'drama'}
+genre_map={'89':'romance','86':'fantasy','117':'ropan','125':'drama','120':'sign board'}
 
-# subcat_uid='117' #change here
-subcat_uid='125' #change here
+subcat_uid='120' #change here   ###################################################################
 data_file_name = f"kakao-{genre_map[subcat_uid]}.csv"
 main_url = "https://page.kakao.com/graphql"
 headers = {
@@ -57,9 +58,12 @@ headers = {
   'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
 }
 
-driver=uc.Chrome()
-# page_no=0    
-page_no=168 #resume here
+options = uc.ChromeOptions() 
+options.page_load_strategy = 'eager'
+driver=uc.Chrome(options=options)
+page_no=0    
+page_no=176 #resume here
+canskip=True
 while True:
     try:
         payload=get_payload(page_no)
@@ -73,6 +77,10 @@ while True:
         for d in res["data"]["staticLandingGenreSection"]["groups"][0]["items"]:
             
             book_id=d["eventLog"]["eventMeta"]["id"]
+            if book_id=='59781395':           ##for skipping
+                canskip=False
+            if canskip:
+                continue
             book_url=f'https://page.kakao.com/content/{book_id}'
             # ranking=d["rank"]
             title=d["title"]
@@ -80,6 +88,7 @@ while True:
             views=d["subtitleList"][0]
             ageGrade=d["ageGrade"]
             try:
+                print(book_url)
                 driver.get(book_url)
                 time.sleep(2)
                 s=bs(driver.page_source,"lxml")
@@ -87,14 +96,24 @@ while True:
                 # first_chapter_date=s.find(By.CSS_SELECTOR,'.list-child-item:nth-child(1) .h-16pxr .align-middle').text
                 # print(first_chapter_date)
                 # spans1=s.find_all("span",class_='text-el-70')
-                total_chaps=s.select("span.break-all")[5].text
-                spans=s.select("span.text-el-70.opacity-70")
-                dates=s.select("div.h-16pxr.text-el-50 span.align-middle")
-                first_chapter_date=dates[0].text
-                print(book_url)
-                # print("1:")
-                total_chaps=(total_chaps).split()[1]
-                # print("2:")
+                try:
+                    total_chaps=s.select("span.break-all")[5].text
+                    total_chaps=(total_chaps).split()[1]
+                    print("1:")
+                except:
+                    total_chaps="NA"
+                try:
+                    spans=s.select("span.text-el-70.opacity-70")
+                    rating=spans[2].text
+                    print("2:")
+                except:
+                    rating="NA"
+                try:
+                    dates=driver.find_elements(By.CSS_SELECTOR,"div.h-16pxr.text-el-50 span.align-middle")
+                    first_chapter_date=dates[0].text
+                    print('3:')
+                except:
+                    first_chapter_date='NA'
                 # print(s.text)
                 # divs=s.find_all("div",class_="bg-bg-a-20")
                 # total_chaps=s.select_one(By.CSS_SELECTOR,'.rounded-b-12pxr .font-small2-bold.text-el-70').text
@@ -105,9 +124,7 @@ while True:
                 # views=spans[1].text
                 # if views[-1]=='억':
                 #     views=float(views[:-1])*100000000
-                # print("3:")
-                rating=spans[2].text
-                # print("4:")
+                
                 # status="True"
                 # for s in spans:
                 #     if " 연재" in s.text:
@@ -122,28 +139,45 @@ while True:
                 driver.get(book_url+"?tab_type=about")
                 time.sleep(2)
                 s1=bs(driver.page_source,"lxml")
-                intro=s1.find("span",class_="whitespace-pre-wrap").text
-                # print("5:")
+                try:
+                    intro=driver.find_element("span",class_="whitespace-pre-wrap").text
+                    print('4:')
+                except:
+                    try:
+                        intro=s1.select('span.whitespace-pre-wrap').text
+                        print('4:')
+                    except:
+                        intro='NA'
+                    
+                
                 # divs=s1.find_all("div",class_="mt-16pxr")[2].find_all("div")
-                tags_ele=s1.select("span.font-small2-bold.text-ellipsis")
-                tags=[]
-                for ele in tags_ele:
-                    tags.append(ele.text)
-                # print('(#########)')
+                try:
+                    tags_ele=s1.select("span.font-small2-bold.text-ellipsis")
+                    tags=[]
+                    for ele in tags_ele:
+                        tags.append(ele.text)
+                    print("5:")
+                except:
+                    tags='NA'
+                # print('(#########)')   https://page.kakao.com/content/59806554
                 # print("6")
-                publisher='N/A'
-                divs=s1.select('.pt-6pxr')
-                for d in divs:
-                    if '발행자' in d.text:
-                        publisher =(d.text)[3:]
-                        break
+                publisher='NA'
+                try:
+                    divs=s1.select('.pt-6pxr')
+                    for d in divs:
+                        if '발행자' in d.text:
+                            publisher =(d.text)[3:]
+                            break
+                    print("6:")
+                except:
+                    pass
                 # print("7:",publisher)
                         
                 # print(ranking,title,total_chaps,rating,views,tags,genre,book_url,publisher)
                 book_data=dict.fromkeys(COLUMNS)
-                # book_data["ranking"]=ranking
+                print('7:')
                 book_data["title"]=title
-                book_data["book_id"]=book_id
+                book_data["book_id"]='kakao'+book_id
                 book_data["ageGrade"]=ageGrade
                 book_data["total_chaps"]=total_chaps
                 book_data["rating"]=rating
@@ -155,6 +189,7 @@ while True:
                 book_data["url"]=book_url   
                 book_data["publisher"]=publisher
                 book_data["chapter1_date"]=first_chapter_date
+                print('8:')
                 append_list_as_row(data_file_name,book_data)   
 
             except Exception as e:
@@ -163,7 +198,7 @@ while True:
                 book_data=dict.fromkeys(COLUMNS)
                 # book_data["ranking"]=ranking
                 book_data["title"]=title
-                book_data["book_id"]=book_id
+                book_data["book_id"]='kakao'+book_id
                 book_data["ageGrade"]=ageGrade
                 book_data["views"]=views
                 book_data["genre"]=genre
