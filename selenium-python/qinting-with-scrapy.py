@@ -8,9 +8,7 @@ class QingTingSpider(scrapy.Spider):
     name = 'qinting_spider'
     # map = { genrename: [genrecode,lastpage] } 
     map={'sci-fi':['3850',8],'fantasy-romance':['3843',17],'feOriented-mystery':['3844',7],'modern-romance':['3842',155],'ancient-romance':['3841',122],'historical-legends':['3840',38],'fantasy-superPower':['3839',82],'suspense-supernatural':['3838',122],'urban':['3837',160]}
-    file_name=''  #change
-    genre_code=''   #change
-    last_page=0   #change
+    file_name='' 
     start_urls =[] 
     df_header = {
         "title": [],"id":[], "url": [], "anchors": [], "description": [], "total plays": [],
@@ -37,11 +35,11 @@ class QingTingSpider(scrapy.Spider):
         }
     }
     def __init__(self):
-        genrename='urban'  #change here
-        self.file_name=f'qinting-{genrename}'
-        for i in range(1,self.map[genrename][1]+1):
+        self.genrename='sci-fi'  #change here
+        self.file_name=f'qinting-{self.genrename}'
+        for i in range(1,self.map[self.genrename][1]+1):
             print('page:',i)
-            self.start_urls.append(f'https://webapi.qingting.fm/api/mobile/categories/521/attr/3289-{self.map[genrename][0]}/?page={i}')
+            self.start_urls.append(f'https://webapi.qingting.fm/api/mobile/categories/521/attr/3289-{self.map[self.genrename][0]}/?page={i}')
     
     def append_list_as_row(self,file_name, list_of_elem):
         file_exists = os.path.isfile(file_name)
@@ -53,17 +51,19 @@ class QingTingSpider(scrapy.Spider):
 
     def parse(self, response):
         data = json.loads(response.text)
-        for entry in data.get("FilterList", []):
-            url1 = f'https://m.qingting.fm/vchannels/{entry["id"]}'
-            title = entry['title']
-            episodes = entry['program_count']
-            descr = entry['description']
-            plays = entry['playcount']
-            
-            url2 = f'https://webapi.qingting.fm/api/mobile/channels/{entry["id"]}'
-            url3 = f'{url2}/programs?version='
+        lst=data.get("FilterList")  
+        if lst:
+            for entry in lst:
+                url1 = f'https://m.qingting.fm/vchannels/{entry["id"]}'
+                title = entry['title']
+                episodes = entry['program_count']
+                descr = entry['description']
+                plays = entry['playcount']
+                
+                url2 = f'https://webapi.qingting.fm/api/mobile/channels/{entry["id"]}'
+                url3 = f'{url2}/programs?version='
 
-            yield scrapy.Request(url2, callback=self.parse_channel, meta={'url1': url1, 'title': title,'episodes': episodes, 'descr': descr,'plays': plays, 'url3': url3})
+                yield scrapy.Request(url2, callback=self.parse_channel, meta={'url1': url1, 'title': title,'episodes': episodes, 'descr': descr,'plays': plays, 'url3': url3})
     
     def parse_channel(self, response):
         data = json.loads(response.text)
@@ -118,3 +118,14 @@ if __name__ == "__main__":
     process = CrawlerProcess()
     process.crawl(QingTingSpider)
     process.start()
+
+
+# urban - 200:8528 , 404:405
+# suspense-supernatural - 200:6452 , 404:229
+# fantasy-superPower - 200:4120 , 404:225
+# historical-legends - 200:1962 , 404:125
+# ancient-romance - 200:6204 , 404:421
+# modern-romance - 200:7112 , 404:417
+# fantasy-romance - 200:941 , 404:22
+# sci-fi - 200:426 , 404:3
+# feOriented-mystery - 200:395 , 404:6
