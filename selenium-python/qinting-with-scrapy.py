@@ -6,7 +6,7 @@ from csv import DictWriter
 
 class QingTingSpider(scrapy.Spider):
     name = 'qinting_spider'
-    # map = { genrename: [genrecode,lastpage] } 
+    # map = { genrename: [genrecode,lastpage] }
     map={'sci-fi':['3850',8],'fantasy-romance':['3843',17],'feOriented-mystery':['3844',7],'modern-romance':['3842',155],'ancient-romance':['3841',122],'historical-legends':['3840',38],'fantasy-superPower':['3839',82],'suspense-supernatural':['3838',122],'urban':['3837',160]}
     file_name='' 
     start_urls =[] 
@@ -36,11 +36,11 @@ class QingTingSpider(scrapy.Spider):
     }
     def __init__(self):
         self.genrename='sci-fi'  #change here
-        self.file_name=f'qinting-{self.genrename}'
+        self.file_name=f'test-qinting-{self.genrename}'
         for i in range(1,self.map[self.genrename][1]+1):
             print('page:',i)
             self.start_urls.append(f'https://webapi.qingting.fm/api/mobile/categories/521/attr/3289-{self.map[self.genrename][0]}/?page={i}')
-    
+
     def append_list_as_row(self,file_name, list_of_elem):
         file_exists = os.path.isfile(file_name)
         with open(file_name, mode="a+", encoding="utf-8-sig", newline="") as csvfile:
@@ -59,12 +59,15 @@ class QingTingSpider(scrapy.Spider):
                 episodes = entry['program_count']
                 descr = entry['description']
                 plays = entry['playcount']
-                
+                if plays[-1] == "万":
+                    plays = float(plays[:-1]) * 10000
+                    plays = int(plays)
+
                 url2 = f'https://webapi.qingting.fm/api/mobile/channels/{entry["id"]}'
                 url3 = f'{url2}/programs?version='
 
                 yield scrapy.Request(url2, callback=self.parse_channel, meta={'url1': url1, 'title': title,'episodes': episodes, 'descr': descr,'plays': plays, 'url3': url3})
-    
+
     def parse_channel(self, response):
         data = json.loads(response.text)
         anchors = []
@@ -79,7 +82,7 @@ class QingTingSpider(scrapy.Spider):
                              meta={'url1': response.meta['url1'], 'title': response.meta['title'],
                                    'descr': response.meta['descr'], 'plays': response.meta['plays'],
                                    'episodes': response.meta['episodes'], 'anchors': anchors})
-    
+
     def parse_programs(self, response):
         data = json.loads(response.text)
         first_ep_plays = 'error'
@@ -87,6 +90,9 @@ class QingTingSpider(scrapy.Spider):
 
         try:
             first_ep_plays = data['programs'][0]['playCount']
+            if first_ep_plays[-1] == "万":
+                first_ep_plays = float(first_ep_plays[:-1]) * 10000
+                first_ep_plays = int(first_ep_plays)
             first_ep_date = data['programs'][0]['updateTime'][:10]
         except:
             pass

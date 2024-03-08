@@ -9,8 +9,8 @@ class levelingods(scrapy.Spider):
         self.book_url = 'https://www.levelingods.shop/p/isnt-being-wicked-woman-much-better.html'   #change this
         
         self.start_urls = [ self.book_url ]     
-        self.start = 1  # like this
-        self.end = 167
+        self.start = 168  # like this
+        self.end = 177
         # self.output_dict = {}
         self.doc = docx.Document()
         self.priority = 100000000
@@ -25,8 +25,9 @@ class levelingods(scrapy.Spider):
         links=response.css("#post-body a::attr(href)").getall()
         links=links[1:]
         for i in range(len(links)):
-            yield response.follow(url = links[i], callback=self.parse_chapter, priority = self.priority, meta={'no':i+1})
-            self.priority -= 1
+            if i+1>=self.start and i+1<=self.end:
+                yield response.follow(url = links[i], callback=self.parse_chapter, priority = self.priority, meta={'no':i+1})
+                self.priority -= 1
             # break
     
     def parse_chapter(self,response): #on chapter page
