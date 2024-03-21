@@ -19,7 +19,7 @@ class QuoteSpider(scrapy.Spider):
                 "lastPublishedPart":[], "chaptersTotal_hit_book":[], "timeReadApprox(hours)_hit_book":[], "hit_book_url":[]}
     # file_name='wattpad_author'
     ans = pd.DataFrame(Headers)
-    cup=-1000000000
+    cup=1000000000
     hours_content_limit=5    #hours, requirement from novels content team
 
     def parse(self,response):

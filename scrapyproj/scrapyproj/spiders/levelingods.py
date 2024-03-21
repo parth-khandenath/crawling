@@ -21,7 +21,7 @@ class levelingods(scrapy.Spider):
         'CONCURRENT_REQUESTS':1
     }
     
-    def parse(self,response): #on book page
+    def parse(self,response): #on book page 
         links=response.css("#post-body a::attr(href)").getall()
         links=links[1:]
         for i in range(len(links)):

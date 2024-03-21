@@ -13,7 +13,7 @@ all_book_urls=[
     # 'https://www.webnovel.com/book/8060642606003005',
     # 'https://www.webnovel.com/book/6831850602000905',
     # 'https://www.webnovel.com/book/15962877405536805',
-    'https://www.webnovel.com/book/19402521105225105'
+    'https://www.webnovel.com/book/8060642606003005'
     ]
 for book_url in all_book_urls:
     book_id=book_url.split('/')[-1]
@@ -29,7 +29,7 @@ for book_url in all_book_urls:
     driver.get(alt_link+'/catalog') #open table of contents
     time.sleep(10)
     atags=driver.find_elements(By.CSS_SELECTOR,".db.pr")
-    atags=atags[:20]   #first 20 chapters
+    atags=atags[:80]   #first 80 chapters
     chpt_links=[]
     for a in atags:
         chpt_links.append(a.get_attribute("href"))
@@ -62,7 +62,12 @@ for book_url in all_book_urls:
         c+=1
         chapter_id=chpt_link.split('_')[-1]
         print('chapter no:',c,' chpt id:',chapter_id)
-        page_index=1
+        if c<=56:
+            continue
+        if c==34:
+            page_index=3
+        else:
+            page_index=1
         can_break=False
         while True: #get all comments
             if can_break:

@@ -5,7 +5,7 @@ import pandas as pd
 
 skip=True
 # for idx,row in sheet.iterrows():
-book_url= "https://www.webnovel.com/book/19402521105225105"#row['URL']
+book_url= "https://www.webnovel.com/book/6831850602000905"#row['URL']
 book_num_id=book_url.split('/')[-1]
 # if book_num_id=='16699683105884505':   
 #     skip=False

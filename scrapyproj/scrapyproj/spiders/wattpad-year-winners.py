@@ -51,9 +51,9 @@ class QuoteSpider(scrapy.Spider):
                     time=book['length']/69000
                     time=float("{:.2f}".format(time))   
                     author=book['user']['name']
-                    status="ongoing"
+                    status="Ongoing"
                     if book['completed']==True:
-                        status='completed'
+                        status='Completed'
                     mature_status=book['mature']
                     description=book['description']
                     tags=book['tags']

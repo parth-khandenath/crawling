@@ -51,9 +51,9 @@ def SignIn():
 
 
 def crawl_babel(title):
-    page_start = 1    #change here
+    page_start = 251    #change here
     start = page_start
-    page_end = 200    #change here
+    page_end = 1000    #change here
     # lis = [ 1626,1629,1635,1642,1645,1649,1666,1679,1680,1687,1688,1700]
     book_title = title
     
@@ -101,7 +101,7 @@ def crawl_babel(title):
     # document.save(f"out/{book_title}.docx")
 
 
-title=[ "Beauty-protecting Soldier King"]   #change here
+title=["a-mistaken-marriage-with-mr-ceo"]   #change here
 
 SignIn()
 for t in title:

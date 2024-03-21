@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 
 # file_name="tencentvideo-anime.csv"  #page 92 turned out to be the last page
 # channelid='100119'
-file_name="tencentvideo-TVdrama.csv"    #page x is the last page
+file_name="tencentvideo-TVdrama.csv"    #page 166 is the last page
 channelid='100113'
 
 df_header = {'bookId':[],
@@ -184,10 +184,12 @@ def get_book(booklink, id):
     append_list_as_row(data)
 
 # start=0
-start=92
+start=110
 canskip=True
 page=start   
 while(True):
+    if page==150:
+        print('breaking at PAGE 150')
     if page==start:
         driver.get('https://www.google.co.in/')
         print('install urban vpn!! in 2 mins...')
@@ -207,7 +209,7 @@ while(True):
                 if cid:
                     book_link = f'https://v.qq.com/x/cover/{cid}.html'
                     print(book_link)
-                    if book_link=='https://v.qq.com/x/cover/8rvudgp9wngcozf.html':
+                    if book_link=='https://v.qq.com/x/cover/oepttveo877112s.html':
                         canskip=False
                     if canskip:
                         continue

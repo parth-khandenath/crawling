@@ -41,19 +41,19 @@ for gender in ['male-lead', 'female-lead','original']:
         continue
     if gender=='female-lead':
         continue
-    if gender=='original':
-        page_number=83
+    # if gender=='original':
+    #     page_number=83
     while True:
         if gender=='male-lead':
             if page_number==123: #change here
                 print("male done...")
                 break
         elif gender=='female-lead':
-            if page_number==157: #change here
+            if page_number==158: #change here
                 print("female done...")
                 break
         else: #original
-            if page_number==137: #change here
+            if page_number==144: #change here
                 print('original done...')
                 break
         if gender in ['male-lead', 'female-lead']:
@@ -62,6 +62,7 @@ for gender in ['male-lead', 'female-lead','original']:
             link=f"https://api.babelnovel.com/v1/books?orderBy=week&languageCode=en&topClass={gender}&targetAudience=&page={page_number}&pageSize=20&fields=id,name,canonicalName,genres,cover,subTitle,synopsis,translatorId,ratingNum,markedUp,releasedChapterCount,enSerial,readingTrend"
         driver.get(link)
         requests+=1
+        time.sleep(3)
         # if requests%150==0:
         #     time.sleep(20)
         soup = bs(driver.page_source,"lxml")
@@ -101,6 +102,7 @@ for gender in ['male-lead', 'female-lead','original']:
                 try:
                     driver.get(book_api)
                     requests+=1
+                    time.sleep(1)
                     # if requests%150==0:
                     #     time.sleep(20)
                     soup = bs(driver.page_source,"lxml")
