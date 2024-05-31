@@ -34,10 +34,10 @@ class QuoteSpider(scrapy.Spider):
     def parse(self,response):
         limit=100 #change here    #max limit (api se pata chala)
         offset=0
-        A=['sportsromance']#change here  
+        A=['athlete']#change here  
         for genre in A:
             self.file_name=f'wattpad_{genre}_listing'
-            while offset<1138:#change here           # total no of stories (api se pata chala)
+            while offset<1200:#change here           # total no of stories (api se pata chala)
                 url=f"https://api.wattpad.com/v5/hotlist?tags={genre}&language=1&offset={offset}&limit={limit}"
                 self.cup-=10000
                 yield response.follow( url=url, callback=self.page, priority=self.cup, meta={'p':self.cup,'genre':genre})
@@ -84,6 +84,29 @@ class QuoteSpider(scrapy.Spider):
         chapter1_publish_date=res['firstPublishedPart']['createDate'][:10]
 
         self.ans.loc[len(self.ans.index)] = [book_name,data['book_id'],book_url,totalReads,totalVotes,num_parts,time,author,status,mature_status,description,tags,chapter1_publish_date]
-
-    def closed(self,reason):
         self.ans.to_csv(f'{self.file_name}.csv',index=False)
+
+    # def closed(self,reason):
+    #     self.ans.to_csv(f'{self.file_name}.csv',index=False)
+
+# adventure - 1200
+# horror - 1200
+# mystery - 1200
+# paranormal - 1200
+# sciencefiction - 1200
+# thriller - 1200
+# contemporarylit - 662
+# fantasy - 1200
+# humor - 1200
+# newadult - 1200
+# werewolf - 1200
+# diverselit - 1200
+# historicalfiction - 1200
+# teenfiction - 1200
+# romance - 1200
+# nonfiction - 1200
+# lgbt - 1200
+
+# sportsromance - 447 - want all books here
+# sports - 1200 - want all books here
+# athlete - 1200 - want all books here

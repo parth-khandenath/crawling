@@ -3,7 +3,7 @@ import undetected_chromedriver as uc
 from bs4 import BeautifulSoup 
 import time
 import re
-
+# for catgories with unknown category ids, that is, no API calls being done
 def extract_hashtags(text):
     try:
         hashtags = re.findall(r'#\w+', text)

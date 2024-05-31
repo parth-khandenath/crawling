@@ -96,8 +96,8 @@ class inkr(scrapy.Spider):
         self.books+=1
         print(self.books)
         df = pd.DataFrame(self.output)
-        df.to_csv('new-inkr.csv', index=False)
+        df.to_csv('inkr.csv', index=False)
 
     def closed(self, reason):
         df = pd.DataFrame(self.output)
-        df.to_csv('new-inkr.csv', index=False)
+        df.to_csv('inkr.csv', index=False)

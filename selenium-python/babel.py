@@ -29,20 +29,22 @@ options.add_argument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) App
 driver = uc.Chrome(options=options)
 
 requests=0
-for gender in ['male-lead', 'female-lead','original']:
-    # if gender == 'male-lead':
+genders = ['male-lead', 'female-lead','original']
+for gender in genders:
+    page_number = 0
+    # if gender=='male-lead':
     #     continue
+    #     # page_number=123
+    # if gender=='female-lead':
+    #     # continue
+    #     page_number=139
+    # if gender=='original':
+    #     continue
+        # page_number=92
     try:
         ans=pd.read_csv(f"babel-{gender}.csv")
     except:
         ans=pd.DataFrame(headers)
-    page_number = 0
-    if gender=='male-lead':
-        continue
-    if gender=='female-lead':
-        continue
-    # if gender=='original':
-    #     page_number=83
     while True:
         if gender=='male-lead':
             if page_number==123: #change here
@@ -53,7 +55,7 @@ for gender in ['male-lead', 'female-lead','original']:
                 print("female done...")
                 break
         else: #original
-            if page_number==144: #change here
+            if page_number==146: #change here
                 print('original done...')
                 break
         if gender in ['male-lead', 'female-lead']:
@@ -122,5 +124,6 @@ for gender in ['male-lead', 'female-lead','original']:
         ans.to_csv(f"babel-{gender}.csv",index=False)
         print(f"gender:{gender} , page no done:{page_number}")
         page_number += 1
-    ans = pd.DataFrame(headers) 
+    # ans = pd.DataFrame(headers) 
     time.sleep(15)
+driver.close()

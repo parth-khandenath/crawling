@@ -51,7 +51,7 @@ def SignIn():
 
 
 def crawl_babel(title):
-    page_start = 251    #change here
+    page_start = 866    #change here
     start = page_start
     page_end = 1000    #change here
     # lis = [ 1626,1629,1635,1642,1645,1649,1666,1679,1680,1687,1688,1700]
@@ -75,10 +75,10 @@ def crawl_babel(title):
 
     while start<=page_end:
     # for start in lis:
-        if (start-1)%50==0:
-            document.save(f"{book_title}_{page_start}_{start-1}.docx")
-            document=Document()
-            page_start=start
+        # if (start-1)%50==0:
+        #     document.save(f"{book_title}_{page_start}_{start-1}.docx")
+        #     document=Document()
+        #     page_start=start
         url=f"https://babelnovel.com/books/{book_title}/chapters/c{start}"
         driver.get(url)
         # time.sleep(15)
@@ -94,14 +94,16 @@ def crawl_babel(title):
             document.add_paragraph(p.text)
 
         document.add_page_break()
+        time.sleep(4)
         print(f"{start} done")
         start+=1
 
     document.save(f"{book_title}_{page_start}_{page_end}.docx")
+    driver.close()
     # document.save(f"out/{book_title}.docx")
 
 
-title=["a-mistaken-marriage-with-mr-ceo"]   #change here
+title=["her-sniper"]   #change here
 
 SignIn()
 for t in title:

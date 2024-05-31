@@ -27,7 +27,9 @@ headers = {
 }
 df_header={
     'creator_link':[],
+    'creator_name':[],
     'video_url':[],
+    'video_source_url':[],
     'videolength':[],
     'likes':[],
     'comments':[],
@@ -120,9 +122,10 @@ try:
 except:
     cdf=pd.DataFrame(cdf_header)
 canskip=True
+# creator_links=['https://www.douyin.com/user/MS4wLjABAAAAsC0iSmqSGjbTbl3iv3PruaZWtgIA59O87ks-4zkVHI6KtlaeY7A8Q88KicQGloAa']
 for creator_link in creator_links:
     print('creator:',creator_link)
-    if creator_link=='https://www.douyin.com/user/MS4wLjABAAAAsC0iSmqSGjbTbl3iv3PruaZWtgIA59O87ks-4zkVHI6KtlaeY7A8Q88KicQGloAa':
+    if creator_link=='https://www.douyin.com/user/MS4wLjABAAAArSyDm6uGJ7vN7YNWjgbUFFmph2IO-MYqGVWsX4nTuKE':
         canskip=False
     if canskip:
         continue
@@ -170,8 +173,8 @@ for creator_link in creator_links:
         aboutcreator=soup.select_one('.DtlymgqL span.j5WZzJdp').text
     except:
         aboutcreator="NA"
-    cdf.loc[len(cdf.index)]=[creatorname,creator_link,creatorfocus,creatorfans,creatorliked,account_id,numofwork,aboutcreator]
-    cdf.to_csv(cfilename,index=False)
+    # cdf.loc[len(cdf.index)]=[creatorname,creator_link,creatorfocus,creatorfans,creatorliked,account_id,numofwork,aboutcreator]
+    # cdf.to_csv(cfilename,index=False)
 
     links=soup.select('.hY8lWHgA.SF0P5HVG.h0CXDpkg')
     links2=[]
@@ -199,6 +202,7 @@ for creator_link in creator_links:
                 # soup2 = BeautifulSoup(driver.html,"lxml") #drissionpage
                 videolength=soup2.select_one('span.time-duration').text
             videolength=videolength.replace(':','m')
+            video_source_url=soup2.select_one('video source').get('src')
             videolength+='s'
             print(videolength)
             stat_eles=soup2.select('.ofo4bP_8')
@@ -226,7 +230,7 @@ for creator_link in creator_links:
             releasetime=soup2.select_one('.D8UdT9V8').text
             # releasetime=releasetime.split(':')[1]
 
-            df.loc[len(df.index)]=[creator_link,videourl,videolength,likes,comments,stars,shares,title,releasetime]
+            df.loc[len(df.index)]=[creator_link,creatorname,videourl,video_source_url,videolength,likes,comments,stars,shares,title,releasetime]
             df.to_csv(videofilename,index=False)
         except:
             pass

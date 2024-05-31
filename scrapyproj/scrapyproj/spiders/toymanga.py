@@ -4,21 +4,22 @@ import math
 
 class toyManga(scrapy.Spider):
     name = 'toyManga'
-    allowed_domains = ['www.toymanga.com']
+    allowed_domains = ['www.toymanga.com','watchnovel.com']
     def __init__(self, **kwargs):
         self.start_urls = []
-        self.start_chapter = 251 #change here
-        self.end_chapter = 305 #change here
-        self.book_name = "the president's pregnant, ex-wife" #change here
+        self.start_chapter = 1 #change here
+        self.end_chapter = 100 #change here
+        self.book_name = "THE ALPHA CLAIMING HIS ENEMY'S DAUGHTER" #change here
         start_page=math.ceil(self.start_chapter/50)
         end_page=math.ceil(self.end_chapter/50)
         for i in range(start_page,end_page+1): #change below link
-            self.start_urls.append(f'https://www.toymanga.com/book/7000.html?page_num={i}&b=The-President%E2%80%99s-Pregnant,-Ex-Wife')
+            self.start_urls.append(f'https://watchnovel.com/book/7002.html?page_num={i}&b=The-Alpha:-Claiming-His-Enemy%27s-Daughter')
         self.doc = docx.Document()
         self.priority = 1000000
                 
     custom_settings={
-        'CONCURRENT_REQUESTS':1
+        'CONCURRENT_REQUESTS':1,
+        'DOWNLOAD_DELAY': 1
     }
     
     def parse(self,response):  #on a page
@@ -28,7 +29,7 @@ class toyManga(scrapy.Spider):
         # print(all_links)
         pg_no=int(response.url.split('&')[0].split('=')[1])
         offset=50*(pg_no-1)
-        base_url='https://www.toymanga.com'
+        base_url='https://watchnovel.com'
         for idx in range(1,51):
             chpt_no=offset+idx
             if chpt_no>=self.start_chapter and chpt_no<=self.end_chapter:

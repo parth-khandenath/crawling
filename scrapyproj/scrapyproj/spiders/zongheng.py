@@ -6,9 +6,10 @@ class PowertoolContentZonghengSpider(scrapy.Spider):
     name = 'zongheng'
     allowed_domains = ['book.zongheng.com','read.zongheng.com']
     def __init__(self, **kwargs):
-        self.start_urls = ['https://huayu.zongheng.com/showchapter/1119895.html']
-        self.start_chapter = 1
-        self.end_chapter = 2
+        self.start_urls = ['https://www.zongheng.com/detail/1239429']   #change here
+        self.start_chapter = 1   #change here
+        self.end_chapter = 50    #change here
+        self.filename= "Exploration"
         # self.output_dict = kwargs['output_dict']
         self.doc = docx.Document()
         self.priority = 1000000
@@ -46,7 +47,7 @@ class PowertoolContentZonghengSpider(scrapy.Spider):
             chapters_response = requests.request("POST", url, headers=headers, data=payload)
             if chapters_response.status_code==200:
                 response_json=chapters_response.json()
-                chapter_list=(((response_json['result']['chapterList'])[1])['chapterViewList']) #all chapters
+                chapter_list=(((response_json['result']['chapterList'])[0])['chapterViewList']) #all chapters
                 chapters_in_range=[] #free chapters within requested range
 
                 for indx in range(self.start_chapter-1, min(self.end_chapter,len(chapter_list))):
@@ -102,4 +103,4 @@ class PowertoolContentZonghengSpider(scrapy.Spider):
         # self.output_dict['output'] = self.doc 
 
     def closed(self,reason):
-        self.doc.save('trial.docx')  
+        self.doc.save(f'{self.filename}-{self.start_chapter}-{self.end_chapter}.docx')  
